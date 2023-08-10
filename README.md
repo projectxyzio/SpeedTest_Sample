@@ -3,7 +3,7 @@
 # INSTRUCTIONS
 
 Hello there!
-This is a HeadSpin Speedtest SandBox module. It consists of 2 python scripts, which automate the `SpeedTest by Ookla` app on android and iOS headspin devices. Anybody can run these python scripts on their system having any of the operating systems given below:
+This is a HeadSpin Speedtest Script for the Android module. which automates the `SpeedTest by Ookla` app  on  headspin devices. Anybody can run these Python scripts on their system having any of the operating systems given below:
 
 * macOS
 * Linux
