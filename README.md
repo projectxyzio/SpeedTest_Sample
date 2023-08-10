@@ -69,13 +69,12 @@ Before executing the python script, make sure the Speedtest app is installed on 
 
 ## Executing the Automation Scripts. 
 
-Make sure that you are inside the `Speedtest_SandBox` directory(the extracted folder) on your CLI. Otherwise, python won't be able to find the scrips.
+Make sure that you are inside the `SpeedTest_Sample` directory(the extracted folder) on your CLI. Otherwise, python won't be able to find the scrips.
 
-Use the `cd <path to the Speedtest_SanBox directory>` command to change the directory to the correct one if you are not inside the correct directory.
+Use the `cd <path to the SpeedTest_Sample directory>` command to change the directory to the correct one if you are not inside the correct directory.
 
 
-
-####        Syntax For a  Runs:
+####       Run Command:
 >python3 speed\_test\_android.py --udid \<device udid\>  --url \<web driver url\>
 
 
