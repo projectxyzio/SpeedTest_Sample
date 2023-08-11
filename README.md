@@ -77,6 +77,7 @@ Use the `cd <path to the SpeedTest_Sample directory>` command to change the dire
 
 
 ####       Run Command:
->python3 speed\_test\_android.py --udid \<device udid\>  --url \<web driver url\>
+> python3 speed_test_android.py --udid <device udid> --url <web driver url>
+
 
 
