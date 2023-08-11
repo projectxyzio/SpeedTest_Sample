@@ -152,7 +152,7 @@ class SpeedtestAndroidTest(unittest.TestCase):
         self.wait.until(EC.presence_of_element_located((MobileBy.ID, 'org.zwanoo.android.speedtest:id/go_button')))
         
         # Record the end time of app launch
-        self.kpi_labels["Launch Time"]['end'] = time.time() + 0.2  # Adding a small offset for accuracy
+        self.kpi_labels["Launch Time"]['end'] = time.time()
         
         sleep(2)  # Allow some time for stability
 
@@ -189,7 +189,7 @@ class SpeedtestAndroidTest(unittest.TestCase):
         self.wait.until(EC.presence_of_element_located((MobileBy.ID, 'org.zwanoo.android.speedtest:id/site_name')))
         
         # Record the end time of status loading
-        self.kpi_labels["Status Loading Time"]['end'] = time.time() + 0.2
+        self.kpi_labels["Status Loading Time"]['end'] = time.time() 
         
         # Set sensitivity value for analysis
         self.kpi_labels["Status Loading Time"]['start_sensitivity'] = 0.99
@@ -266,6 +266,8 @@ class SpeedtestAndroidTest(unittest.TestCase):
         Note:
             This function relies on the `self.kpi_labels` dictionary populated during the test execution.
         """
+
+        # Preparing pay_load for page load analysis api.
         pay_load = {"regions": [], "wait_timeout_sec": 600}
         for key in self.kpi_labels:
             if self.kpi_labels[key]["start"] is not None and self.kpi_labels[key]["end"] is not None:
