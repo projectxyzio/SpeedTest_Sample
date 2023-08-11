@@ -3,11 +3,13 @@
 # INSTRUCTIONS
 
 Hello there!
-This is a HeadSpin Speedtest Script for the Android module. which automates the `SpeedTest by Ookla` app  on  headspin devices. Anybody can run these Python scripts on their system having any of the operating systems given below:
 
-* macOS
-* Linux
-* Windows 
+This is a HeadSpin Speedtest Script for the Android module that automates the `SpeedTest by Ookla` app on HeadSpin devices. Anyone can run these Python scripts on their system, regardless of the operating system. The supported operating systems are:
+
+- macOS
+- Linux
+- Windows
+
 
 Just flow the below steps to try it out.
 
