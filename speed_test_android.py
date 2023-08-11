@@ -33,7 +33,7 @@ urllib3.disable_warnings()
 class SpeedtestAndroidTest(unittest.TestCase):
 
     # Test configuration
-    test_name = "SpeedTest"
+    test_name = "SpeedTest_Android"
     package = "org.zwanoo.android.speedtest"
     activity = "com.ookla.mobile4.screens.main.MainActivity"
     description = "Headspin Page Load Analysis Sample Session"
@@ -67,13 +67,12 @@ class SpeedtestAndroidTest(unittest.TestCase):
         self.desired_caps['noReset'] = True
         self.desired_caps['automationName'] = "UiAutomator2"
         self.desired_caps['autoLaunch'] = False
+        
         # Headspin Capabilities
         self.desired_caps['headspin:capture.autoStart'] = True
         self.desired_caps['headspin:capture.video'] = True
         self.desired_caps['headspin:capture.network'] = False
         self.desired_caps['headspin:testName'] = self.test_name 
-        self.desired_caps['headspin:session.name'] = self.test_name 
-        self.desired_caps['headspin:session.description'] = self.description
         
         # Initialize KPI labels
         self.kpi_labels = {}
@@ -248,7 +247,9 @@ class SpeedtestAndroidTest(unittest.TestCase):
 
         # Calling the function to perform page load analysis
         self.perform_page_load_analysis()
-
+        
+        # Calling the function to add descript and Name to the session
+        self.add_session_description()
     
     def perform_page_load_analysis(self):
         """
@@ -286,6 +287,33 @@ class SpeedtestAndroidTest(unittest.TestCase):
         request_url = f"https://api-dev.headspin.io/v0/sessions/analysis/pageloadtime/{self.session_id}"
         r = requests.post(
             request_url, headers=headers, json=pay_load)
+        r.raise_for_status()
+
+    def add_session_description(self):
+        """
+        Add a description to the Headspin session with test-related information.
+
+        This function sends an HTTP POST request to the Headspin API to add a description to the session.
+        The description includes the test name and the status of the test (passed or failed).
+
+        Note:
+            - This function requires the availability of `self.session_id`, `self.test_name`, `self.status`, and `headers`.
+            - It updates the description of the session on the Headspin platform.
+
+        Raises:
+            requests.exceptions.HTTPError: If there is an issue while sending the payload to the Headspin API.
+        """
+        # Construct the request URL
+        request_url = f"https://api-dev.headspin.io/v0/sessions/{self.session_id}/description"
+        
+        # Prepare the data payload for the session description
+        data_payload = {}
+        data_payload['name'] = self.test_name
+        data_payload['description'] = f"Headspin Page Load Analysis Sample Session. Test_Status: {self.status}"
+        
+        # Send the POST request to update session description
+        r = requests.post(
+            request_url, headers=headers, json=data_payload)
         r.raise_for_status()
 
 if __name__ == '__main__':
