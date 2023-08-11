@@ -54,13 +54,15 @@ class SpeedtestAndroidTest(unittest.TestCase):
         #Initializing Kpis
         self.kpi_labels = {}
         self.kpi_labels["Launch"] = {"start" : None, "end" : None}
-        self.kpi_labels["Speedtest_Time"] = {"start" : None, "end" : None}
+        
+        self.kpi_labels["Status Loading Time"] = {"start" : None, "end" : None}
+        self.kpi_labels["Status Loading Time"]['start_sensitivity'] = 0.99
 
         self.data_kpis = {}
         self.data_kpis["Download_speed"] = None
         self.data_kpis["Upload_speed"] = None
         self.data_kpis["Launch"] = None
-        self.data_kpis["Speedtest_Time"] = None
+        self.data_kpis["Status Loading Time"] = None
         
         # headspin api module object creation
         self.hs_api_call = hsApi(udid, access_token)
@@ -82,6 +84,7 @@ class SpeedtestAndroidTest(unittest.TestCase):
         self.kpi_labels["Launch"]['start'] = int(round(time.time() * 1000))
         self.driver.launch_app()
         self.manage_permission()
+        self.get_status_loading_kpi()
         self.get_network_kpis()
 
         self.status = "Passed"
@@ -121,19 +124,27 @@ class SpeedtestAndroidTest(unittest.TestCase):
 
         sleep(3)
 
+    def get_status_loading_kpi(self):
+        self.status = "Status Loading Failed"
+        status = self.wait.until(EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, "Status")))
+        self.kpi_labels["Status Loading Time"]['start'] = int(round(time.time() * 1000))
+        status.click()
+        self.wait.until(EC.presence_of_element_located((MobileBy.ID, 'org.zwanoo.android.speedtest:id/site_name')))
+        self.kpi_labels["Status Loading Time"]['end'] = int(round((time.time()+2) * 1000))
+        sleep(2)
     #TEST script part to get the download and upload speed from the app.
     def get_network_kpis(self):
         self.status="Fail_Start_Speed_Test"
-        
+        self.wait.until(EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, "Speed"))).click()
         begin_button = self.wait.until(EC.presence_of_element_located((MobileBy.ID,'org.zwanoo.android.speedtest:id/go_button')))
         sleep(2)
-        self.kpi_labels["Speedtest_Time"]['start'] = int(round(time.time() * 1000))
+
+        #Begin SpeedTest
         begin_button.click()
         print("\nStarted Speedtest\n")
 
         self.status= "Speedtest_failed"
         self.long_wait.until(EC.presence_of_element_located((MobileBy.ID,'org.zwanoo.android.speedtest:id/shareIcon')))
-        self.kpi_labels["Speedtest_Time"]['end'] = int(round(time.time() * 1000))
         print("\nSpeedtest Finished\n")
         results = self.wait.until(EC.presence_of_all_elements_located((MobileBy.ID,'org.zwanoo.android.speedtest:id/txt_test_result_value')))
 
@@ -158,28 +169,30 @@ class SpeedtestAndroidTest(unittest.TestCase):
         session_url = "https://ui-dev.headspin.io/sessions/" + self.session_id + "/waterfall"
 
         print("\nURL :", session_url)
+
         self.get_video_start_timestamp()
 
         self.wait_for_session_video_becomes_available()
+        print("Video Available for post processing")
         # adding labels
         self.add_session_annotations()
+        print("Added session Annotation ")
 
         session_data , session_tags = self.get_general_session_data()
 
         # adding data to session
         self.hs_api_call.add_session_data(session_data=session_data)
-        
+        print("Added session data ")
         # adding tags to session
         self.hs_api_call.add_session_tags(session_id=self.session_id, tag_list=session_tags)
+        print("Added session tags ")
 
         description_string = ""
         for data in session_data['data']:
             description_string += data['key'] + " : " + str(data['value']) + "\n"
         # adding name and description to session.
         self.hs_api_call.update_session_name_and_description(session_id=self.session_id, name=self.test_name, description=description_string)
-
-        # time.sleep(3)
-
+        print("updated the session  description")
 
 #                        ******* FUNCTION  CALLS  ************
     # adding all the captured data to session data which is uploaded the session
@@ -202,7 +215,6 @@ class SpeedtestAndroidTest(unittest.TestCase):
                 session_tags.append({ key:  -1 })
         return session_data ,session_tags
 
-    
     def add_session_annotations(self):
         page_load = {"regions": [], "wait_timeout_sec": 600}
         print("adding_visual_based_session_annotations")
